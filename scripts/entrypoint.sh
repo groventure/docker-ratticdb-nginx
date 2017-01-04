@@ -1,13 +1,20 @@
 set -e
 
-if [[ -z "$UWSGI_PORT_8000_TCP_ADDR" ]]; then
-  echo '$UWSGI_PORT_8000_TCP_ADDR not defined. Aborting...' >&2
-  exit 1
+uwsgi_host=''
+uwsgi_port=''
+
+if [[ -n "$UWSGI_PORT_8000_TCP_ADDR" ]]; then
+  uwsgi_host="$UWSGI_PORT_8000_TCP_ADDR"
+else
+  uwsgi_host='uwsgi'
 fi
 
-if [[ -z "$UWSGI_PORT_8000_TCP_PORT" ]]; then
-  echo '$UWSGI_PORT_8000_TCP_PORT not defined. Aborting...' >&2
-  exit 1
+if [[ -n "$UWSGI_PORT_8000_TCP_PORT" ]]; then
+  uwsgi_port="$UWSGI_PORT_8000_TCP_PORT"
+elif [[ -n "$UWSGI_PORT" ]]; then
+  uwsgi_port="$UWSGI_PORT"
+else
+  uwsgi_port='8000'
 fi
 
 nginx_conf_path='/etc/nginx/conf.d/rattic.conf'
